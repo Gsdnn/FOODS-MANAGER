@@ -24,6 +24,9 @@ export const store = createStore<State>({
         MoveTab(state:State,indexPath:string){
             const index =state.tabList.findIndex(item=>item.path.indexOf(indexPath)!==-1)
             state.tabList.splice(index,1)
+        },
+        setTabData(state:State){
+            sessionStorage.setItem('TABS_ROUTER',JSON.stringify(state.tabList))
         }
         // increment(state){
         //     state.count++

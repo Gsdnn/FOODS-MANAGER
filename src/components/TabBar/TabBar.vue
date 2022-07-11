@@ -6,6 +6,7 @@
     class="demo-tabs"
     @tab-click="handlePath"
     @edit="handleTabsEdit"
+    @contextmenu.prevent.native="openContextMenu($event)"
   >
     <el-tab-pane
       v-for="(item,index) in editableTabs"
@@ -17,10 +18,17 @@
     
     </el-tab-pane>
   </el-tabs>
+
+  <ul v-show="contextVisiable" :style="{left:left+'px',top:top+'px'}" class="contextMenu">
+    <li>关闭所有</li>
+    <li>关闭左边</li>
+    <li>关闭右边</li>
+    <li>关闭其他</li>
+  </ul>
 </template>
 <script lang="ts" setup>
 import { computed } from '@vue/reactivity';
-import { watch } from 'vue';
+import { onMounted, watch } from 'vue';
 import { ref } from 'vue'
 import { useStore } from 'vuex';
 import {useRoute,useRouter} from 'vue-router'
@@ -31,7 +39,7 @@ const editableTabs = computed(()=>{
     return store.getters.getAddTab
 })
 
-const editableTabsValue =ref('/user')
+const editableTabsValue =ref('')
 const route = useRoute()
 const  router =useRouter()
 
@@ -61,14 +69,73 @@ const handleTabsEdit =(targetName: string,action: 'remove' | 'add')=>{
   if(action == "remove"){
     store.commit("MoveTab",targetName)
   }
+  let index = store.state.tabList.length-1
+  if(store.state.tabList.length!==0)
+  router.push({path:store.state.tabList[index].path})
 }
 
+ //刷新数据保存状态
+  const refresh=()=>{
+    window.addEventListener('beforeunload',()=>{
+      store.commit('setTabData')
+    })
+  }
+  let session = sessionStorage.getItem("TABS_ROUTER")
+  if(session){
+    let tabItem = JSON.parse(session)
+    console.log(tabItem)
+    tabItem.forEach((element:Itab) => {
+        store.commit('addTab',element)
+    });
+  }
+  //右键显示菜单列表
+  let contextVisiable =ref(false)
+  let left = ref('')
+  let top = ref('')
+  const openContextMenu=(e:any)=>{
+
+   if(e.srcElement.id){
+    let currentContextTable =e.srcElement.id.split('-')[1]
+      contextVisiable.value=true
+      left.value = e.clientX
+      top.value = e.clientY +15
+   }
+  }
+  onMounted(()=>{
+
+    //刷新保存数据
+    //  addTab()
+    refresh()
+  })
+  
+
 </script>
-<style>
+<style lang="scss">
 .demo-tabs > .el-tabs__content {
   padding: 32px;
   color: #6b778c;
   font-size: 32px;
   font-weight: 600;
+}
+.contextMenu{
+  width: 100px;
+  margin: 0;
+  border: 1px solid #fff;
+  z-index: 99;
+  position: absolute;
+  list-style-type: none;
+  padding: 5px 0;
+  border-radius: 4px;
+  font-size: 15px;
+  color: #333;
+  box-shadow: 2px 2px 3px 0 rgba(0,0,0,0.2);
+  li{
+    margin: 0;
+    padding: 7px 16px;
+    &:hover{
+      background: #f2f2f2;
+      cursor: pointer;
+    }
+  }
 }
 </style>
