@@ -4,15 +4,17 @@
     type="card"
     editable
     class="demo-tabs"
-
+    @tab-click="handlePath"
+    @edit="handleTabsEdit"
   >
     <el-tab-pane
-      v-for="item in editableTabs"
+      v-for="(item,index) in editableTabs"
       :key="item.path"
       :label="item.title"
       :name="item.path"
+     
     >
-      {{ item.content }}
+    
     </el-tab-pane>
   </el-tabs>
 </template>
@@ -21,7 +23,7 @@ import { computed } from '@vue/reactivity';
 import { watch } from 'vue';
 import { ref } from 'vue'
 import { useStore } from 'vuex';
-import {useRoute} from 'vue-router'
+import {useRoute,useRouter} from 'vue-router'
 import { Itab } from '../../store/type';
 const store = useStore()
 
@@ -31,6 +33,7 @@ const editableTabs = computed(()=>{
 
 const editableTabsValue =ref('/user')
 const route = useRoute()
+const  router =useRouter()
 
 //添加tab
 
@@ -46,6 +49,19 @@ watch(()=>route.path,() =>{
     editableTabsValue.value =route.path
     addTab()
 })
+
+const handlePath = (event:any)=>{
+ console.log(event)
+if(event.props!=='')
+ router.push( event.props.name)
+}
+
+const handleTabsEdit =(targetName: string,action: 'remove' | 'add')=>{
+  console.log(action,targetName)
+  if(action == "remove"){
+    store.commit("MoveTab",targetName)
+  }
+}
 
 </script>
 <style>

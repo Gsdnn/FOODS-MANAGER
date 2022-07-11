@@ -132,60 +132,60 @@ const routes:Array<RouteRecordRaw> = [
     ],
   },
   
-  {
-    path:'/system',
-    name:'system',
-    component:Layout,
-    meta:{
-      title:'system',
-      icon:'Wallet',
-      roles: ['admin','editor']
-    },
-    children:[
-      {
-        path:'account',
-        name:'account',
-        component:() => import('@/views/system/Account.vue'),
-        meta:{
-          title:'account',
-          icon:'User',
-          roles: ['editor']
-        }
+  // {
+  //   path:'/system',
+  //   name:'system',
+  //   component:Layout,
+  //   meta:{
+  //     title:'system',
+  //     icon:'Wallet',
+  //     roles: ['admin','editor']
+  //   },
+  //   children:[
+  //     {
+  //       path:'account',
+  //       name:'account',
+  //       component:() => import('@/views/system/Account.vue'),
+  //       meta:{
+  //         title:'account',
+  //         icon:'User',
+  //         roles: ['editor']
+  //       }
 
-      },
-      {
-        path:'group',
-        name:'group',
-        component:() => import('@/views/system/Group.vue'),
-        meta:{
-          title:'group',
-          icon:'Refrigerator',
-          roles: ['admin']
-        }
-      }, {
-        path:'task',
-        name:'task',
-        component:() => import('@/views/system/Task.vue'),
-        meta:{
-          title:'account',
-          icon:'Clock',
-          roles: ['editor']
-        }
+  //     },
+  //     {
+  //       path:'group',
+  //       name:'group',
+  //       component:() => import('@/views/system/Group.vue'),
+  //       meta:{
+  //         title:'group',
+  //         icon:'Refrigerator',
+  //         roles: ['admin']
+  //       }
+  //     }, {
+  //       path:'task',
+  //       name:'task',
+  //       component:() => import('@/views/system/Task.vue'),
+  //       meta:{
+  //         title:'account',
+  //         icon:'Clock',
+  //         roles: ['editor']
+  //       }
 
-      },
-      {
-        path:'Setting',
-        name:'Setting',
-        component:() => import('@/views/system/Setting.vue'),
-        meta:{
-          title:'系统设置',
-          icon:'Setting',
-          roles: ['admin']
-        }
-      }
-    ]
-
-  }
+  //     },
+  //     {
+  //       path:'Setting',
+  //       name:'Setting',
+  //       component:() => import('@/views/system/Setting.vue'),
+  //       meta:{
+  //         title:'系统设置',
+  //         icon:'Setting',
+  //         roles: ['admin']
+  //       }
+  //     }
+  //   ]
+  
+  // }
 ]
 
 const router = createRouter({
