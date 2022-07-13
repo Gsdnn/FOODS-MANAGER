@@ -4,13 +4,13 @@
     <div class="forms-container">
       <div class="signin-signup">
         <!-- 登录 -->
-        <LoginForm :loginUser="loginUser" :rules="rules" />
+        <LoginForm  />
 
         <!-- 注册 -->
-        <RegisterForm
+        <!-- <RegisterForm
           :registerUser="registerUser"
           :registerRules="registerRules"
-        />
+        /> -->
       </div>
     </div>
     <!-- 左右切换动画 -->
@@ -39,19 +39,16 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import { ref, getCurrentInstance } from "vue";
-// import { loginUser, rules } from "@/utils/loginValidators";
-// import { registerUser, registerRules } from "@/utils/registerValidators";
+<script lang="ts" setup>
+
+import { ref } from "vue";
 import LoginForm from "../../components/LoginForm/LoginForm.vue";
-import RegisterForm from "../../components/RegisterForm/RegisterForm.vue";
-export default {
-  name: "LoginRegister",
-   components: { LoginForm, RegisterForm },
-  setup() {
+
+
+
     // @ts-ignore
     // const { ctx } = getCurrentInstance();
-    // const signUpMode = ref<boolean>(false);
+    const signUpMode = ref<boolean>(false);
 
     // return {
     //   signUpMode,
@@ -60,8 +57,7 @@ export default {
     //   registerUser,
     //   registerRules,
     // };
-  },
-};
+ 
 </script>
 <style scoped>
 .container {

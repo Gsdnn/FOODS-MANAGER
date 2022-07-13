@@ -1,5 +1,6 @@
 <template>
-  <el-form
+ <div>
+   <el-form
     :model="loginFrom"
     :rules="loginRules"
     label-width="100px"
@@ -20,13 +21,13 @@
       ></el-input>
     </el-form-item>
 
-    <el-from-item prop="verifyCode">
-        <el-input
-          v-model="loginFrom.verifyCode"
-          type="text"
-          placeholder="Enter verifyCode..."
-        ></el-input>
-    </el-from-item>
+     <el-form-item label="验证码" prop="verifyCode">
+      <el-input
+        v-model="loginFrom.verifyCode"
+       
+        placeholder="Enter verifyCode..."
+      ></el-input>
+    </el-form-item>
 
     <el-form-item>
       <el-button
@@ -42,20 +43,36 @@
       <p>忘记密码？ <a>立即找回</a></p>
     </div>
   </el-form>
+ </div>
 </template>
 
 <script lang="ts" setup>
 import { reactive } from 'vue';
   const loginRules = reactive({
-    
+    username:[
+      {
+        required:true,
+        message:'请输入账号',
+        trigger:'blur'
+      },
+      {
+        pattern:/^[2-zA_Z0-9]{2,10}$/,
+        message:'请输入2到10位数字或者字母',
+        trigger:'blur'
+      }
+    ]
   })
 
   const loginFrom =reactive({
     username:'',
     password:'',
+    verifyCode:'',
     uuid:'',
-    verifyCode:''
   })
+  const handleLogin =(info:string)=>{
+    console.log(info);
+    
+  }
 </script>
 <style scoped>
 /* form */
