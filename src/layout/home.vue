@@ -1,5 +1,5 @@
 <template>
-  <div class="layout">
+  <div class="layout" @click="!contextVisiable">
     <el-container>
       <el-header>
          <el-row :gutter="20">
@@ -41,6 +41,8 @@
     import { ref } from 'vue';
 
     const collapsed = ref<boolean>(false)
+
+    const contextVisiable=ref<boolean>(true)
 </script>
 
 <style lang="scss" scoped>

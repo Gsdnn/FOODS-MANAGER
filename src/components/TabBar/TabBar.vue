@@ -9,7 +9,7 @@
     @contextmenu.prevent.native="openContextMenu($event)"
   >
     <el-tab-pane
-      v-for="(item,index) in editableTabs"
+      v-for="item in editableTabs"
       :key="item.path"
       :label="item.title"
       :name="item.path"
@@ -20,10 +20,10 @@
   </el-tabs>
 
   <ul v-show="contextVisiable" :style="{left:left+'px',top:top+'px'}" class="contextMenu">
-    <li>关闭所有</li>
-    <li>关闭左边</li>
-    <li>关闭右边</li>
-    <li>关闭其他</li>
+    <li @click="closeAllTab">关闭所有</li>
+    <li @click="closeOther('left')">关闭左边</li>
+    <li @click="closeOther('right')">关闭右边</li>
+    <li @click="closeOther('other')">关闭其他</li>
   </ul>
 </template>
 <script lang="ts" setup>
@@ -33,14 +33,18 @@ import { ref } from 'vue'
 import { useStore } from 'vuex';
 import {useRoute,useRouter} from 'vue-router'
 import { Itab } from '../../store/type';
+
+defineProps(['contextVisiable'])
+
 const store = useStore()
+
 
 const editableTabs = computed(()=>{
     return store.getters.getAddTab
 })
 
 const editableTabsValue =ref('')
-const route = useRoute()
+const route = useRoute()  
 const  router =useRouter()
 
 //添加tab
@@ -53,10 +57,26 @@ const addTab= ()=>{
     }
     store.commit("addTab",tab)
 }
+//刷新数据保存状态
+  const refresh=()=>{
+    window.addEventListener('beforeunload',()=>{
+     if(store.state.tabList!=='')
+      store.commit('setTabData')
+    })
+  }
+  let session = sessionStorage.getItem("TABS_ROUTER")
+  if(session){
+    let tabItem = JSON.parse(session)
+    console.log(tabItem)
+    tabItem.forEach((element:Itab) => {
+        store.commit('addTab',element)
+    });
+  }
+
 watch(()=>route.path,() =>{
     editableTabsValue.value =route.path
     addTab()
-})
+},{immediate:true})
 
 const handlePath = (event:any)=>{
  console.log(event)
@@ -74,33 +94,39 @@ const handleTabsEdit =(targetName: string,action: 'remove' | 'add')=>{
   router.push({path:store.state.tabList[index].path})
 }
 
- //刷新数据保存状态
-  const refresh=()=>{
-    window.addEventListener('beforeunload',()=>{
-      store.commit('setTabData')
-    })
-  }
-  let session = sessionStorage.getItem("TABS_ROUTER")
-  if(session){
-    let tabItem = JSON.parse(session)
-    console.log(tabItem)
-    tabItem.forEach((element:Itab) => {
-        store.commit('addTab',element)
-    });
-  }
+ 
   //右键显示菜单列表
   let contextVisiable =ref(false)
   let left = ref('')
   let top = ref('')
+  
   const openContextMenu=(e:any)=>{
-
    if(e.srcElement.id){
     let currentContextTable =e.srcElement.id.split('-')[1]
+    //把路由保存起来
+    store.commit('savecontextMenu',currentContextTable)
       contextVisiable.value=true
       left.value = e.clientX
       top.value = e.clientY +15
    }
+   
   }
+  //关闭所有
+  const closeAllTab = ()=>{
+    store.commit('closeAllTab')
+    contextVisiable.value=false
+    
+  }
+
+  const closeOther =(clickInfo:string)=>{
+      
+        store.commit("closeOther",clickInfo)
+       contextVisiable.value=false
+
+  
+    
+  }
+
   onMounted(()=>{
 
     //刷新保存数据
